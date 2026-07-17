@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
+from typing import Optional
 
 
 tasks = [
@@ -10,7 +11,10 @@ tasks = [
 
 class PostBody(BaseModel):
     title: str
-    
+
+class UpdateBody(BaseModel):
+    title: Optional[str]
+    done: Optional[bool]
 
 
 app = FastAPI()
@@ -56,3 +60,35 @@ def add_task(body: PostBody):
       }
       tasks.append(newbody)
       return newbody
+  
+
+@app.put("/tasks/{id}")
+def update_task(id: int, body: UpdateBody):
+    
+    if not body.model_dump(exclude_unset=True):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="There is no content in body")
+
+    for task in tasks:
+        if task["id"]==id:
+            task.update(body.model_dump(exclude_unset=True))
+            return task
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Task of id {id} not found"
+
+    )  
+
+
+
+
+@app.delete("/tasks/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_task(id: int):
+    for task in tasks:
+        if task["id"]==id:
+            tasks.remove(task)
+            return
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Task of id {id} not found"
+    )
+
