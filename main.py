@@ -19,21 +19,21 @@ class UpdateBody(BaseModel):
 
 app = FastAPI()
 
-@app.get("/")
+@app.get("/", description="Welcome the user")
 def root_info():
     
     return { "name": "Task API", "version": "1.0", "endpoints": ["/tasks"] }
 
-@app.get("/health")
+@app.get("/health", description="Check if server is working")
 def get_health():
     return { "status": "ok" }
 
 
-@app.get("/tasks")
+@app.get("/tasks", description="Display all the tasks stored in the app")
 def get_all_tasks():
     return tasks
 
-@app.get("/tasks/{id}")
+@app.get("/tasks/{id}", description="Display the task based on ID")
 def get_by_id(id: int):
     for task in tasks:
         if task["id"]==id:
@@ -44,7 +44,7 @@ def get_by_id(id: int):
         detail= f"Task {id} not found"
     )
 
-@app.post("/tasks", status_code=status.HTTP_201_CREATED)
+@app.post("/tasks", description="Add a new task to the app", status_code=status.HTTP_201_CREATED)
 def add_task(body: PostBody):
   ids = [task["id"] for task in tasks]
   newid = max(ids)+1
@@ -62,7 +62,7 @@ def add_task(body: PostBody):
       return newbody
   
 
-@app.put("/tasks/{id}")
+@app.put("/tasks/{id}", description="Update the existing tasking based on ID")
 def update_task(id: int, body: UpdateBody):
     
     if not body.model_dump(exclude_unset=True):
@@ -81,7 +81,7 @@ def update_task(id: int, body: UpdateBody):
 
 
 
-@app.delete("/tasks/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/tasks/{id}",description="Remove a task from app based on ID", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(id: int):
     for task in tasks:
         if task["id"]==id:
