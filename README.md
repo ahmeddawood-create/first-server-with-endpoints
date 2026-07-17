@@ -7,14 +7,14 @@
     - In your terminal, run:
         - python -m venv venv
         - venv/Scripts/activate
-- install FASTAPI and other libraries (must)
+- Install FastAPI and other libraries (must)
     -In your terminal, run:
         - pip install fastapi[standard]
-- Run the server using command in your terminal:
+- Run the server using the command in your terminal:
     - fastapi dev
-- Now, you can run the curl commands to use the app or you can open http://127.0.0.1:8000/ in your browswer
+- Now, you can run the curl commands to use the app, or you can open http://127.0.0.1:8000/ in your browser
 - Example curl command: curl "http://127.0.0.1:8000/tasks/101"
-- You can also access the Swagger UI made interactive documentation on http://127.0.0.1:8000/docs
+- You can also access the Swagger UI made interactive documentation, on http://127.0.0.1:8000/docs
 
 
 
