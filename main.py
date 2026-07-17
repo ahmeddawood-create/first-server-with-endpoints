@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
+from pydantic import BaseModel
 
 
 tasks = [
@@ -6,6 +7,10 @@ tasks = [
     {"id":102, "title": "check mail inbox", "done": True},
     {"id":103, "title": "get grocery", "done": False}
 ]
+
+class PostBody(BaseModel):
+    title: str
+    
 
 
 app = FastAPI()
@@ -35,3 +40,19 @@ def get_by_id(id: int):
         detail= f"Task {id} not found"
     )
 
+@app.post("/tasks", status_code=status.HTTP_201_CREATED)
+def add_task(body: PostBody):
+  ids = [task["id"] for task in tasks]
+  newid = max(ids)+1
+  if body.title is None or body.title=="" or body.title=="string":
+     raise HTTPException(
+         status_code=status.HTTP_400_BAD_REQUEST,
+         detail="No title provided or just 'string'"
+     )
+
+  else:
+      newbody: dict ={
+         "id": newid, "title" : body.title, "done": False
+      }
+      tasks.append(newbody)
+      return newbody
